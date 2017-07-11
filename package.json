@@ -4,7 +4,8 @@
   "description": "A basic API implementation for Albion online using the limited gameinfo API.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-docs": "jsdoc --configure .jsdoc.json --verbose"
   },
   "keywords": [
     "albion",
@@ -27,5 +28,9 @@
   },
   "engines": {
     "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.5.1",
+    "minami": "^1.2.3"
   }
 }
