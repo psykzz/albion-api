@@ -1,6 +1,6 @@
 {
   "name": "albion-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A basic API implementation for Albion online using the limited gameinfo API.",
   "main": "lib/index.js",
   "scripts": {
