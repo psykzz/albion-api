@@ -7,7 +7,7 @@ I decided to share as i thought others might also be able to make use of the API
 
 ## Documentation
 
-Documentation can be found (or generated) under `./docs`. You can also view the docs online at http://psykzz.com/albion-api/.
+Documentation can be found (or generated) under `./docs`. You can also view the docs online at [http://psykzz.com/albion-api](http://psykzz.com/albion-api).
 
 ## Contributions
 
