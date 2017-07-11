@@ -1,0 +1,23 @@
+{
+  "name": "albion-api",
+  "version": "1.0.0",
+  "description": "A basic API implementation for Albion online using the limited gameinfo API.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "albion",
+    "online",
+    "api"
+  ],
+  "author": "PsyKzz",
+  "license": "GNU",
+  "dependencies": {
+    "debug": "^2.6.8",
+    "requests": "^0.2.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
