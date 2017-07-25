@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/psykzz/albion-api#readme",
   "dependencies": {
+    "async": "^2.5.0",
     "debug": "^2.6.8",
     "requests": "^0.2.2"
   },
