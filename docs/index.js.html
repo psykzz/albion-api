@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEventDetails">getEventDetails</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEventsBetween">getEventsBetween</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildData">getGuildData</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildFued">getGuildFued</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildInfo">getGuildInfo</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildMembers">getGuildMembers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildStats">getGuildStats</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildTopKills">getGuildTopKills</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getPlayerInfo">getPlayerInfo</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRecentEvents">getRecentEvents</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#search">search</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEventDetails">getEventDetails</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEventsBetween">getEventsBetween</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildData">getGuildData</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildFued">getGuildFued</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildInfo">getGuildInfo</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildMembers">getGuildMembers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildStats">getGuildStats</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getGuildTopKills">getGuildTopKills</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getPlayerInfo">getPlayerInfo</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRecentEvents">getRecentEvents</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getServerStatus">getServerStatus</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#search">search</a></span></li>
 </nav>
 
 <div id="main">
@@ -40,6 +40,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>var debug = require('debug')('AlbionAPI');
+var async = require('async');
 var request = require('request');
 
 var BASE_URL = process.env.ALBION_API_BASE || 'https://gameinfo.albiononline.com/api/gameinfo';
@@ -52,10 +53,55 @@ var BASE_URL = process.env.ALBION_API_BASE || 'https://gameinfo.albiononline.com
  * @private
  */
 function baseRequest(uri, cb) {
-  request(`${BASE_URL}${uri}`, function (error, response, body) {
-    debug(`statusCode: ${response &amp;&amp; response.statusCode}`);
-    cb(error, JSON.parse(body));
+  var url = `${BASE_URL}${uri}`;
+  request(url, function (error, response, body) {
+    debug(`Url: ${url} statusCode: ${response &amp;&amp; response.statusCode}`);
+    if(error || (response &amp;&amp; response.statusCode === 404)) {
+       cb(error || response);
+    }
+    cb(null, JSON.parse(body));
   });
+}
+
+/**
+ * getServerStatus - description
+ *
+ * @param  {callback} cb  description
+ */
+function getServerStatus(cb) {
+  async.parallel({
+      live: (cb) => {
+        request('http://live.albiononline.com/status.txt', (error, response, body) => {
+          if(error) {
+            return cb(error);
+          }
+          cb(null, JSON.parse(body.trim()));
+        });
+      },
+      staging: (cb) => {
+        request('http://staging.albiononline.com/status.txt', (error, response, body) => {
+          if(error) {
+            return cb(error);
+          }
+          cb(null, JSON.parse(body.trim()));
+        });
+      }
+    }, (e, rs) => {
+      if(e) {
+        return cb(e);
+      }
+
+      cb(null, {
+        live: {
+          status: rs.live.status,
+          message: rs.live.message,
+        },
+        staging: {
+          status: rs.staging.status,
+          message: rs.staging.message,
+        }
+      });
+    });
 }
 
 // -- Searching
@@ -218,6 +264,7 @@ function getPlayerInfo(playerId, cb) {
 
 module.exports = {
   search,
+  getServerStatus,
   getRecentKills, getKillDetails, getPlayerFued,
   getRecentEvents, getEventDetails, getEventsBetween,
   getGuildInfo, getGuildData, getGuildTopKills, getGuildStats, getGuildMembers, getGuildFued,
@@ -235,7 +282,7 @@ module.exports = {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.1</a> on Sat Jul 15 2017 12:44:48 GMT+0100 (GMT Summer Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.1</a> on Sat Jul 29 2017 18:19:30 GMT+0100 (GMT Summer Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
