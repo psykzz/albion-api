@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "jsdoc": "^3.5.1",
-    "minami": "^1.2.3"
+    "minami": "^1.2.3",
+    "request": "^2.88.2"
   }
 }
