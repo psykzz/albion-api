@@ -1,0 +1,79 @@
+From 0820e620f636ba66d8e7f6140a09b04eb717c04b Mon Sep 17 00:00:00 2001
+From: "copilot-swe-agent[bot]" <198982749+Copilot@users.noreply.github.com>
+Date: Wed, 25 Mar 2026 21:22:31 +0000
+Subject: [PATCH] =?UTF-8?q?fix:=20correct=20/fued/=20=E2=86=92=20/feud/=20?=
+ =?UTF-8?q?in=20getGuildFeud,=20rename=20function,=20keep=20backward=20com?=
+ =?UTF-8?q?pat=20alias?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- Fixes the URL path from /guilds/{id}/fued/{id2} (404) to /guilds/{id}/feud/{id2} (200)
+- Renames function getGuildFued → getGuildFeud to match correct spelling
+- Keeps getGuildFued as a backward-compatible alias
+- Exports each function on its own line to prevent future merge conflicts
+
+Closes #5 — supersedes PR #10
+---
+ lib/index.js | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/lib/index.js b/lib/index.js
+index e35c156..efd7d9c 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -196,17 +196,20 @@ function getGuildMembers(guildId, cb) {
+ }
+ 
+ /**
+- * getGuildFued - description
++ * getGuildFeud - description
+  *
+  * @param  {string} guildId1 description
+  * @param  {string} guildId2 description
+  * @param  {callback} cb       description
+  */
+-function getGuildFued(guildId1, guildId2, cb) {
++function getGuildFeud(guildId1, guildId2, cb) {
+   // https://gameinfo.albiononline.com/api/gameinfo/guilds/r-pjy3pRSMWx-OKqwT-SBg/feud/55EvzyTZQsG70sOuoGXgog
+-  baseRequest(`/guilds/${guildId1}/fued/${guildId2}`, cb);
++  baseRequest(`/guilds/${guildId1}/feud/${guildId2}`, cb);
+ }
+ 
++// Alias for backward compatibility (typo in original name)
++var getGuildFued = getGuildFeud;
++
+ // -- Player
+ //
+ 
+@@ -309,9 +312,22 @@ function getBattleDetails(battleId, cb) {
+ module.exports = {
+   search,
+   getServerStatus,
+-  getRecentKills, getKillDetails, getPlayerFued,
+-  getRecentEvents, getEventDetails, getEventsBetween,
+-  getGuildInfo, getGuildData, getGuildTopKills, getGuildStats, getGuildMembers, getGuildFued,
+-  getPlayerInfo, getPlayerSoloKills, getPlayerTopKills,
+-  getRecentBattles, getBattleDetails
++  getRecentKills,
++  getKillDetails,
++  getPlayerFued,
++  getRecentEvents,
++  getEventDetails,
++  getEventsBetween,
++  getGuildInfo,
++  getGuildData,
++  getGuildTopKills,
++  getGuildStats,
++  getGuildMembers,
++  getGuildFeud,
++  getGuildFued,
++  getPlayerInfo,
++  getPlayerSoloKills,
++  getPlayerTopKills,
++  getRecentBattles,
++  getBattleDetails,
+ };
+-- 
+2.53.0
+

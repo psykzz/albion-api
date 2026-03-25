@@ -1,0 +1,62 @@
+From 758ea155affb4d58c0f32bad2ca6fd0719ba42b6 Mon Sep 17 00:00:00 2001
+From: "copilot-swe-agent[bot]" <198982749+Copilot@users.noreply.github.com>
+Date: Wed, 25 Mar 2026 21:22:58 +0000
+Subject: [PATCH] fix: pass query params to /events endpoint in getRecentEvents
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+getRecentEvents built a query string from opts.limit and opts.offset
+but passed only the bare '/events' URL to baseRequest, ignoring it.
+Now passes '/events${query}' so limit/offset are actually applied.
+
+Exports each function on its own line to prevent future merge conflicts.
+
+Closes #6 — supersedes PR #11
+---
+ lib/index.js | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/lib/index.js b/lib/index.js
+index e35c156..9aea4dd 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -96,7 +96,7 @@ function getRecentEvents(opts, cb) {
+     query += `offset=${opts.offset}`;
+   }
+   // https://gameinfo.albiononline.com/api/gameinfo/events?limit=51&offset=0
+-  baseRequest(`/events`, cb);
++  baseRequest(`/events${query}`, cb);
+ }
+ var getRecentKills = getRecentEvents;
+ 
+@@ -309,9 +309,21 @@ function getBattleDetails(battleId, cb) {
+ module.exports = {
+   search,
+   getServerStatus,
+-  getRecentKills, getKillDetails, getPlayerFued,
+-  getRecentEvents, getEventDetails, getEventsBetween,
+-  getGuildInfo, getGuildData, getGuildTopKills, getGuildStats, getGuildMembers, getGuildFued,
+-  getPlayerInfo, getPlayerSoloKills, getPlayerTopKills,
+-  getRecentBattles, getBattleDetails
++  getRecentKills,
++  getKillDetails,
++  getPlayerFued,
++  getRecentEvents,
++  getEventDetails,
++  getEventsBetween,
++  getGuildInfo,
++  getGuildData,
++  getGuildTopKills,
++  getGuildStats,
++  getGuildMembers,
++  getGuildFued,
++  getPlayerInfo,
++  getPlayerSoloKills,
++  getPlayerTopKills,
++  getRecentBattles,
++  getBattleDetails,
+ };
+-- 
+2.53.0
+

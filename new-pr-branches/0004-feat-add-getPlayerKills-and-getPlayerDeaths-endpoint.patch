@@ -1,0 +1,110 @@
+From b0ef9827d223aea27520a3839252378bb1080a64 Mon Sep 17 00:00:00 2001
+From: "copilot-swe-agent[bot]" <198982749+Copilot@users.noreply.github.com>
+Date: Wed, 25 Mar 2026 21:23:48 +0000
+Subject: [PATCH] feat: add getPlayerKills and getPlayerDeaths endpoints
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The gameinfo API exposes /players/{id}/kills and /players/{id}/deaths
+which return full event-history lists, distinct from the existing
+getPlayerTopKills/getPlayerSoloKills ranked endpoints.
+
+Both accept optional limit, offset, and range query parameters.
+
+Exports each function on its own line to prevent future merge conflicts.
+
+Closes #8 — supersedes PR #13
+---
+ lib/index.js | 70 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 65 insertions(+), 5 deletions(-)
+
+diff --git a/lib/index.js b/lib/index.js
+index e35c156..a06eeb5 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -267,6 +267,52 @@ function getPlayerSoloKills(playerId, opts, cb) {
+   baseRequest(`/players/${playerId}/solokills${query}`, cb);
+ }
+ 
++/**
++ * getPlayerKills - description
++ *
++ * @param  {string} playerId description
++ * @param  {object} opts Options
++ * @param  {callback} cb       description
++ */
++function getPlayerKills(playerId, opts, cb) {
++  // https://gameinfo.albiononline.com/api/gameinfo/players/{playerId}/kills
++  opts = opts || {};
++  query = "?";
++  if(opts.limit) {
++    query += `limit=${opts.limit}`;
++  }
++  if(opts.offset) {
++    query += `offset=${opts.offset}`;
++  }
++  if(opts.range) { // week, lastWeek, month, lastMonth
++    query += `range=${opts.range}`;
++  }
++  baseRequest(`/players/${playerId}/kills${query}`, cb);
++}
++
++/**
++ * getPlayerDeaths - description
++ *
++ * @param  {string} playerId description
++ * @param  {object} opts Options
++ * @param  {callback} cb       description
++ */
++function getPlayerDeaths(playerId, opts, cb) {
++  // https://gameinfo.albiononline.com/api/gameinfo/players/{playerId}/deaths
++  opts = opts || {};
++  query = "?";
++  if(opts.limit) {
++    query += `limit=${opts.limit}`;
++  }
++  if(opts.offset) {
++    query += `offset=${opts.offset}`;
++  }
++  if(opts.range) { // week, lastWeek, month, lastMonth
++    query += `range=${opts.range}`;
++  }
++  baseRequest(`/players/${playerId}/deaths${query}`, cb);
++}
++
+ // -- Battles
+ //
+ 
+@@ -309,9 +355,23 @@ function getBattleDetails(battleId, cb) {
+ module.exports = {
+   search,
+   getServerStatus,
+-  getRecentKills, getKillDetails, getPlayerFued,
+-  getRecentEvents, getEventDetails, getEventsBetween,
+-  getGuildInfo, getGuildData, getGuildTopKills, getGuildStats, getGuildMembers, getGuildFued,
+-  getPlayerInfo, getPlayerSoloKills, getPlayerTopKills,
+-  getRecentBattles, getBattleDetails
++  getRecentKills,
++  getKillDetails,
++  getPlayerFued,
++  getRecentEvents,
++  getEventDetails,
++  getEventsBetween,
++  getGuildInfo,
++  getGuildData,
++  getGuildTopKills,
++  getGuildStats,
++  getGuildMembers,
++  getGuildFued,
++  getPlayerInfo,
++  getPlayerSoloKills,
++  getPlayerTopKills,
++  getPlayerKills,
++  getPlayerDeaths,
++  getRecentBattles,
++  getBattleDetails,
+ };
+-- 
+2.53.0
+
